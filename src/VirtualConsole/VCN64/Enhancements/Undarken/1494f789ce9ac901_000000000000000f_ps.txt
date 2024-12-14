@@ -1,4 +1,4 @@
-#version 420
+#version 450
 #extension GL_ARB_texture_gather : enable
 #extension GL_ARB_separate_shader_objects : enable
 #ifdef VULKAN
@@ -11,27 +11,26 @@
 #define gl_InstanceID gl_InstanceIndex
 #else
 #define ATTR_LAYOUT(__vkSet, __location) layout(location = __location)
-#define UNIFORM_BUFFER_LAYOUT(__glLocation, __vkSet, __vkLocation) layout(binding = __glLocation, std140) 
+#define UNIFORM_BUFFER_LAYOUT(__glLocation, __vkSet, __vkLocation) layout(binding = __glLocation, std140)
 #define TEXTURE_LAYOUT(__glLocation, __vkSet, __vkLocation) layout(binding = __glLocation)
 #define SET_POSITION(_v) gl_Position = _v
 #define GET_FRAGCOORD() vec4(gl_FragCoord.xy*uf_fragCoordScale,gl_FragCoord.zw)
 #endif
 // This shader was automatically converted to be cross-compatible with Vulkan and OpenGL.
 
-// shader 79ba8affb269f61c
-// Checked against output from mGBA (191/255 = Wii U is 74.90196078431373‬% darker)
-// verified on Fire Emblem and Minish Cap
+// shader 1494f789ce9ac901
 #ifdef VULKAN
-layout(set = 1, binding = 1) uniform ufBlock
+layout(set = 1, binding = 0) uniform ufBlock
 {
+uniform ivec4 uf_remappedPS[1];
 uniform vec4 uf_fragCoordScale;
 };
 #else
+uniform ivec4 uf_remappedPS[1];
 uniform vec2 uf_fragCoordScale;
 #endif
-TEXTURE_LAYOUT(0, 1, 0) uniform sampler2D textureUnitPS0;
-layout(location = 0) in vec4 passParameterSem128;
-layout(location = 1) in vec4 passParameterSem129;
+// uf_fragCoordScale was moved to the ufBlock
+layout(location = 0) in vec4 passParameterSem0;
 layout(location = 0) out vec4 passPixelColor0;
 int clampFI32(int v)
 {
@@ -45,7 +44,6 @@ float mul_nonIEEE(float a, float b){ if( a == 0.0 || b == 0.0 ) return 0.0; retu
 void main()
 {
 vec4 R0f = vec4(0.0);
-vec4 R1f = vec4(0.0);
 float backupReg0f, backupReg1f, backupReg2f, backupReg3f, backupReg4f;
 vec4 PV0f = vec4(0.0), PV1f = vec4(0.0);
 float PS0f = 0.0, PS1f = 0.0;
@@ -56,18 +54,16 @@ ivec4 ARi = ivec4(0);
 bool predResult = true;
 vec3 cubeMapSTM;
 int cubeMapFaceId;
-R0f = passParameterSem128;
-R1f = passParameterSem129;
-R1f.xyzw = (texture(textureUnitPS0, R1f.xy).xyzw);
+R0f = passParameterSem0;
 // 0
 backupReg0f = R0f.x;
 backupReg1f = R0f.y;
 backupReg2f = R0f.z;
 backupReg3f = R0f.w;
-R0f.x = mul_nonIEEE(backupReg0f, R1f.x);
-R0f.y = mul_nonIEEE(backupReg1f, R1f.y);
-R0f.z = mul_nonIEEE(backupReg2f, R1f.z);
-R0f.w = mul_nonIEEE(backupReg3f, R1f.w);
+R0f.x = mul_nonIEEE(backupReg0f, intBitsToFloat(uf_remappedPS[0].x));
+R0f.y = mul_nonIEEE(backupReg1f, intBitsToFloat(uf_remappedPS[0].y));
+R0f.z = mul_nonIEEE(backupReg2f, intBitsToFloat(uf_remappedPS[0].z));
+R0f.w = mul_nonIEEE(backupReg3f, intBitsToFloat(uf_remappedPS[0].w));
 // export
-passPixelColor0 = vec4(R0f.x, R0f.y, R0f.z, R0f.w)*float(1.335078534031414);
+passPixelColor0 = vec4(R0f.x, R0f.y, R0f.z, R0f.w)*float(0);
 }

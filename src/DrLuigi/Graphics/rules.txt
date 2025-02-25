@@ -78,12 +78,12 @@ $height = 4320
 
 [Preset]
 category = Anti-Aliasing
-name = Enable
+name = enable
 $AAEnable:int = 1
 
 [Preset]
 category = Anti-Aliasing
-name = Disable
+name = disable
 $AAEnable:int = 0
 
 [TextureRedefine]
